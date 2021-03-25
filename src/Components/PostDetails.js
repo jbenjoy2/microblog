@@ -1,32 +1,20 @@
 import React, { useState } from "react";
 import { useParams, Redirect } from "react-router-dom";
 import NewPostForm from "./NewPostForm";
-
-function PostDetails({ posts, edit, submit, deletePost }) {
+import Comment from "./Comment";
+import { v4 as uuid } from "uuid";
+import CommentList from "./CommentList";
+function PostDetails({ posts, setPosts, edit, submit, deletePost }) {
   const { postId } = useParams();
+  const [formData, setFormData] = useState({ comment: "" });
   const [isEditing, setIsEditing] = useState(false);
   const post = posts.find(post => post.id === postId);
   if (!post) return <Redirect to="/" />;
   const initialData = { ...post };
 
-  // return (
-  // 	<div className="PostDetails container border" style={{ position: 'relative' }}>
-  // 		<div
-  // 			className="PostDetails-buttons float-right"
-  // 			style={{ position: 'absolute', top: '0.5em', right: '0' }}
-  // 		>
-  // 			<i className="fas fa-trash btn btn btn-link text-danger" />
-  // 			<i className="far fa-edit ml-1 btn btn btn-link text-primary" />
-  // 		</div>
-  // 		<div className="PostDetails-details">
-  // 			<h2>{post.title}</h2>
-  // 			<p>
-  // 				<i>{post.description}</i>
-  // 			</p>
-  // 			<p className="text-justify">{post.body}</p>
-  // 		</div>
-  // 	</div>
-  // );
+  const addComment = comment => {
+    post.comments = [...post.comments, { content: comment, id: uuid() }];
+  };
 
   return (
     <>
@@ -61,6 +49,13 @@ function PostDetails({ posts, edit, submit, deletePost }) {
               <i>{post.description}</i>
             </p>
             <p className="text-justify">{post.body}</p>
+          </div>
+          <hr className="mt-5" />
+          <div className="PostDetails-comments">
+            <h2>Comments</h2>
+            <div className="mb-4">
+              <CommentList post={post} />
+            </div>
           </div>
         </div>
       )}

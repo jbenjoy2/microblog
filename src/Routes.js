@@ -71,7 +71,13 @@ function Routes() {
         <NewPostForm add={addPost} submit={formSubmit} route="/" />
       </Route>
       <Route exact path="/:postId">
-        <PostDetails posts={posts} edit={editPost} submit={formSubmit} deletePost={handleDelete} />
+        <PostDetails
+          posts={posts}
+          setPosts={setPosts}
+          edit={editPost}
+          submit={formSubmit}
+          deletePost={handleDelete}
+        />
       </Route>
       <Redirect to="/" />
     </Switch>
