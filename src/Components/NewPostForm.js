@@ -2,13 +2,9 @@ import React, { useState } from "react";
 import { useHistory, Redirect } from "react-router-dom";
 
 function NewPostForm({
-  add,
   submit,
-  route,
   INITIAL_DATA = { title: "", description: "", body: "" },
-  id = undefined,
-  stateFunc = undefined,
-  newState = undefined
+  destination
 }) {
   const history = useHistory();
   const [formData, setFormData] = useState(INITIAL_DATA);
@@ -22,7 +18,10 @@ function NewPostForm({
   };
 
   const handleSubmit = e => {
-    submit(e, add, formData, route, history, id, stateFunc, newState);
+    e.preventDefault();
+    submit(formData);
+    setFormData(INITIAL_DATA);
+    history.push(destination);
   };
   return (
     <div className="NewPostForm container col-md-5 offset-md-4">

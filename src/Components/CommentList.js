@@ -1,19 +1,9 @@
 import React, { useState } from "react";
 import { v4 as uuid } from "uuid";
 import Comment from "./Comment";
-import useLocalStorageState from "../hooks/useLocalStorage";
 
-function CommentList({ post }) {
-  const [comments, setComments] = useLocalStorageState(`post ${post.id}`, []);
+function CommentList({ comments = [], deleteComment, addComment }) {
   const [formData, setFormData] = useState({ content: "" });
-
-  const addComment = comment => {
-    setComments(comments => [...comments, { ...comment, id: uuid() }]);
-  };
-
-  const deleteComment = id => {
-    setComments(comments => comments.filter(comment => comment.id !== id));
-  };
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -28,6 +18,7 @@ function CommentList({ post }) {
     addComment(formData);
     setFormData({ content: "" });
   };
+  console.log(comments);
   return (
     <div className="CommentList">
       {comments.map(comment => (
