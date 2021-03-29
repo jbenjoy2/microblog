@@ -3,30 +3,27 @@ import {
   EDIT_POST,
   REMOVE_POST,
   ADD_COMMENT,
-  REMOVE_COMMENT
+  REMOVE_COMMENT,
+  GET_POST
 } from "../Actions/actionTypes";
 
-const posts = window.localStorage.getItem("posts");
-const allPosts = posts ? JSON.parse(posts) : {};
 
-const rootReucer = (state = allPosts, action) => {
+
+const rootReucer = (state = {}, action) => {
   switch (action.type) {
+    case GET_POST:
+      return {...state, [action.post.id]: action.post}
     case ADD_POST:
-      const newPost = { ...state, [action.post.id]: { ...action.post, comments: [] } };
-      window.localStorage.setItem("posts", JSON.stringify(newPost));
-      return newPost;
+      return {...state, [action.post.id]: {...action.post, comments: []}}
     case EDIT_POST:
-      const edited = {
-        ...state,
-        [action.post.id]: { ...action.post, comments: state[action.post.id].comments }
+       
+      return {
+        ...state, [action.post.id]: { ...action.post, comments: state[action.post.id].comments }
       };
-      window.localStorage.setItem("posts", JSON.stringify(edited));
-      return edited;
     case REMOVE_POST:
       let posts = { ...state };
-      const newPosts = delete posts[action.postId];
-      window.localStorage.setItem("posts", JSON.stringify(newPosts));
-      return newPosts;
+      delete posts[action.postId];
+      return posts;
     case ADD_COMMENT:
       const newComment = {
         ...state,
@@ -35,7 +32,6 @@ const rootReucer = (state = allPosts, action) => {
           comments: [...state[action.postId].comments, action.comment]
         }
       };
-      window.localStorage.setItem("posts", JSON.stringify(newComment));
       return newComment;
     case REMOVE_COMMENT:
       const deletedComment = {
@@ -45,7 +41,6 @@ const rootReucer = (state = allPosts, action) => {
           comments: state[action.postId].comments.filter(c => c.id !== action.commentId)
         }
       };
-      window.localStorage.setItem("posts", JSON.stringify(deletedComment));
       return deletedComment;
     default:
       return state;

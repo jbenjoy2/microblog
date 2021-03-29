@@ -3,44 +3,17 @@ import { v4 as uuid } from "uuid";
 import Comment from "./Comment";
 
 function CommentList({ comments = [], deleteComment, addComment }) {
-  const [formData, setFormData] = useState({ content: "" });
-
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setFormData(formData => ({
-      ...formData,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    addComment(formData);
-    setFormData({ content: "" });
-  };
-  console.log(comments);
+  
   return (
     <div className="CommentList">
       {comments.map(comment => (
         <Comment
           key={comment.id}
           id={comment.id}
-          content={comment.content}
+          content={comment.text}
           deleteComment={deleteComment}
         />
       ))}
-      <form onSubmit={handleSubmit} className="mt-4">
-        <input
-          type="text"
-          name="content"
-          id="content"
-          value={formData.content}
-          onChange={handleChange}
-          className="form-control"
-          placeholder="New comment..."
-        />
-        <button className="btn btn-lg btn-primary mt-3">Add Comment</button>
-      </form>
     </div>
   );
 }

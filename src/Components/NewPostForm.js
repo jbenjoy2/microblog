@@ -1,12 +1,17 @@
 import React, { useState } from "react";
-import { useHistory, Redirect } from "react-router-dom";
+import { useHistory} from "react-router-dom";
 
 function NewPostForm({
-  submit,
-  INITIAL_DATA = { title: "", description: "", body: "" },
-  destination
+  post,
+  cancel,
+  submit
 }) {
-  const history = useHistory();
+  const INITIAL_DATA = {
+    title: post.title,
+    description: post.description,
+    body: post.body
+  }
+  console.log(INITIAL_DATA)
   const [formData, setFormData] = useState(INITIAL_DATA);
 
   const handleChange = e => {
@@ -20,8 +25,6 @@ function NewPostForm({
   const handleSubmit = e => {
     e.preventDefault();
     submit(formData);
-    setFormData(INITIAL_DATA);
-    history.push(destination);
   };
   return (
     <div className="NewPostForm container col-md-5 offset-md-4">
@@ -63,7 +66,7 @@ function NewPostForm({
             rows={15}
           />
         </div>
-        <button className="btn btn-lg btn-danger mr-3" onClick={() => history.push("/")}>
+        <button className="btn btn-lg btn-danger mr-3" onClick={cancel}>
           Cancel
         </button>
         <button type="submit" className="btn btn-lg btn-success ml-3">
@@ -72,6 +75,10 @@ function NewPostForm({
       </form>
     </div>
   );
+}
+
+NewPostForm.defaultProps = {
+  post: {title: '', description: '', body:''}
 }
 
 export default NewPostForm;

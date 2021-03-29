@@ -1,53 +1,56 @@
-import React, { useState } from "react";
-import { useParams, Redirect } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useHistory } from "react-router-dom";
 import NewPostForm from "./NewPostForm";
-import Comment from "./Comment";
-import { v4 as uuid } from "uuid";
 import CommentList from "./CommentList";
-import { useDispatch } from "react-redux";
-import { EDIT_POST, REMOVE_POST, ADD_COMMENT, REMOVE_COMMENT } from "../Actions/actionTypes";
-function PostDetails({ posts }) {
-  const { postId } = useParams();
+import { useDispatch, useSelector } from "react-redux";
+
+import { addCommentApi, deleteCommentApi, deletePostApi, editPostApi, getPostApi } from "../Actions/posts";
+import CommentForm from "./CommentForm";
+function PostDetails(props) {
+  const postId = Number(useParams().postId);
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
-  const post = posts[postId];
-  if (!post) return <Redirect to="/" />;
-  const initialData = { ...post };
+  const post = useSelector(st=>st.posts[postId])
+  const history = useHistory()
 
-  const editPost = postObj => {
-    setIsEditing(false);
-    dispatch({
-      type: EDIT_POST,
-      post: { ...postObj, id: postId }
-    });
+  useEffect(()=>{
+    async function getPost() {
+      dispatch(getPostApi(postId))
+    }
+    if(!post){
+      getPost()
+    }
+  }, [dispatch, post, postId])
+  
+  const toggleEdit = () => {
+    setIsEditing(edit=>!edit)
+  }
+
+  const editPost = ({title, description, body}) => {
+    dispatch(editPostApi(postId, title, description,body))
+    toggleEdit()
   };
 
-  const deletePost = postId => {
-    dispatch({
-      type: REMOVE_POST,
-      postId
-    });
-  };
+  const deletePost = ()=> {
+    dispatch(deletePostApi(postId))
+    history.push('/')
+  }
+  
 
   const addComment = comment => {
-    dispatch({
-      type: ADD_COMMENT,
-      postId,
-      comment: { ...comment, id: uuid() }
-    });
+    dispatch(addCommentApi(postId, comment))
   };
 
   const deleteComment = commentId => {
-    dispatch({
-      type: REMOVE_COMMENT,
-      postId,
-      commentId
-    });
+    dispatch(deleteCommentApi(postId, commentId))
   };
+
+  if(!post) return <b>Loading. . .</b>
+  console.log(post)
   return (
     <>
       {isEditing ? (
-        <NewPostForm INITIAL_DATA={initialData} submit={editPost} destination={`/${postId}`} />
+        <NewPostForm post={post} cancel={toggleEdit} submit={editPost} />
       ) : (
         <div className="PostDetails container w-50" style={{ position: "relative", top: "5em" }}>
           <div
@@ -77,8 +80,8 @@ function PostDetails({ posts }) {
               <CommentList
                 comments={post.comments}
                 deleteComment={deleteComment}
-                addComment={addComment}
               />
+              <CommentForm addComment={addComment} /> 
             </div>
           </div>
         </div>

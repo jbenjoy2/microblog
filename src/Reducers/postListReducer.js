@@ -1,22 +1,19 @@
-import { ADD_POST, EDIT_POST, REMOVE_POST } from "../Actions/actionTypes";
-const titles = window.localStorage.getItem("titles");
-const titlesList = titles ? JSON.parse(titles) : [];
-const INITIAL_STATE = titlesList;
+import { ADD_POST, EDIT_POST, GET_ALL, REMOVE_POST } from "../Actions/actionTypes";
 
-const rootReucer = (state = INITIAL_STATE, action) => {
+const getTitleParams = ({id, title, description, votes}) => {
+  return {id, title, description, votes}
+}
+
+const rootReucer = (state = [], action) => {
   switch (action.type) {
+    case GET_ALL:
+      return [...action.postList]
     case ADD_POST:
-      const newState = [...state, { ...action.post }];
-      window.localStorage.setItem("titles", JSON.stringify(newState));
-      return newState;
+      return [...state, getTitleParams(action.post)]
     case EDIT_POST:
-      const edited = state.map(post => (post.id === action.post.id ? { ...action.post } : post));
-      window.localStorage.setItem("titles", JSON.stringify(edited));
-      return edited;
+      return state.map(post => (post.id === action.post.id ? getTitleParams(action.post) : post));
     case REMOVE_POST:
-      const deletedState = state.filter(post => post.id !== action.postId);
-      window.localStorage.setItem("titles", JSON.stringify(deletedState));
-      return deletedState;
+      return state.filter(post => post.id !== action.postId);
     default:
       return state;
   }
