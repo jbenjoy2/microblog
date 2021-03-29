@@ -4,7 +4,8 @@ import {
   REMOVE_POST,
   ADD_COMMENT,
   REMOVE_COMMENT,
-  GET_POST
+  GET_POST,
+  ADD_VOTE
 } from "../Actions/actionTypes";
 
 
@@ -42,9 +43,12 @@ const rootReucer = (state = {}, action) => {
         }
       };
       return deletedComment;
+    case ADD_VOTE:
+      return {...state, [action.postId]: {...state[action.postId], votes: action.votes}}
     default:
       return state;
   }
+
 };
 
 export default rootReucer;

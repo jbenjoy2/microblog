@@ -1,5 +1,13 @@
 import axios from "axios";
-import { GET_POST, ADD_POST, REMOVE_POST, EDIT_POST, REMOVE_COMMENT, ADD_COMMENT } from "./actionTypes";
+import {
+  GET_POST,
+  ADD_POST,
+  REMOVE_POST,
+  EDIT_POST,
+  REMOVE_COMMENT,
+  ADD_COMMENT,
+  ADD_VOTE
+} from "./actionTypes";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api/posts";
 
@@ -64,25 +72,25 @@ const editPost = post => {
 };
 
 export function deleteCommentApi(postId, commentId) {
-  return async function (dispatch) {
-    await axios.delete(`${API_URL}/${postId}/comments/${commentId}`)
-    return dispatch(removeComment(postId, commentId))
-  }
+  return async function(dispatch) {
+    await axios.delete(`${API_URL}/${postId}/comments/${commentId}`);
+    return dispatch(removeComment(postId, commentId));
+  };
 }
 
 const removeComment = (postId, commentId) => {
   return {
     type: REMOVE_COMMENT,
-    postId, 
+    postId,
     commentId
-  }
-}
+  };
+};
 
 export function addCommentApi(postId, text) {
   return async function(dispatch) {
-    const res = await axios.post(`${API_URL}/${postId}/comments`, {text})
-    return dispatch(addComment(postId, res.data))
-  }
+    const res = await axios.post(`${API_URL}/${postId}/comments`, { text });
+    return dispatch(addComment(postId, res.data));
+  };
 }
 
 const addComment = (postId, comment) => {
@@ -90,5 +98,20 @@ const addComment = (postId, comment) => {
     type: ADD_COMMENT,
     postId,
     comment
-  }
+  };
+};
+
+export function addVoteApi(postId, direction) {
+  return async function(dispatch) {
+    const res = await axios.post(`${API_URL}/${postId}/vote/${direction}`);
+    return dispatch(addVote(postId, res.data.votes));
+  };
 }
+
+const addVote = (postId, votes) => {
+  return {
+    type: ADD_VOTE,
+    postId,
+    votes
+  };
+};

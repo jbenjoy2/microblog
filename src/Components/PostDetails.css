@@ -1,0 +1,10 @@
+.Postdetails-buttons i {
+  margin-left: 1em;
+}
+
+.Postdetails-buttons {
+  position: absolute;
+  right: 0;
+  top: 1em;
+  text-align: right;
+}
